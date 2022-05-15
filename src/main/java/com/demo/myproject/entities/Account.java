@@ -2,7 +2,6 @@ package com.demo.myproject.entities;
 
 import java.io.Serializable;
 
-import com.demo.myproject.utils.Constants.AccountType;
 
 public class Account implements Serializable{
 	
@@ -11,7 +10,7 @@ public class Account implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private long accountId;
+	private int accountId;
 	
     private double balance;
 
@@ -21,11 +20,11 @@ public class Account implements Serializable{
 		
 	}
 
-	public long getAccountId() {
+	public int getAccountId() {
 		return accountId;
 	}
 
-	public void setAccountId(long accountId) {
+	public void setAccountId(int accountId) {
 		this.accountId = accountId;
 	}
 
@@ -46,20 +45,7 @@ public class Account implements Serializable{
 		this.accountType = accountType;
 	}
 	
-	 public void deposit (double amount) {
-		 this.balance = this.balance + amount;
-	 }
 
-	    public void withdraw (double amount) {
-	    	
-	    	if (balance >= amount) {
-	    		this.balance = this.balance - amount;
-	    	}
-	    	else {
-	    		System.out.println("Your balance is not enough to perform this withdrawal");
-	    	}
-	    	
-	    }
 
 	@Override
 	public String toString() {

@@ -8,4 +8,8 @@ public class Constants {
 		CURRENT;
 
 	}
+	
+	public enum TransactionType {
+		DEPOSIT, WITHDRAWAL
+	}
 }

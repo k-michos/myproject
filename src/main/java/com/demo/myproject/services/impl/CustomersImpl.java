@@ -5,13 +5,15 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.demo.myproject.entities.Account;
 import com.demo.myproject.entities.Customer;
 import com.demo.myproject.repositories.CustomerDAO;
+import com.demo.myproject.repositories.TransactionDAO;
 import com.demo.myproject.services.Customers;
+import com.demo.myproject.services.Transactions;
 import com.demo.myproject.utils.Constants.AccountType;
+import com.demo.myproject.utils.Constants.TransactionType;
 import com.demo.myproject.utils.CustomerNotFoundException;
 
 @Service
@@ -19,6 +21,9 @@ public class CustomersImpl implements Customers {
 	
 	@Autowired
 	private CustomerDAO customerDAO;
+	
+	@Autowired
+	private Transactions transactions;
 
 	@Override
 	public List<Customer> getAllCustomers() {
@@ -96,6 +101,10 @@ public class CustomersImpl implements Customers {
 	@Override
 	public Customer newCurrentAccount (Long customerID, double initialCredit) throws CustomerNotFoundException {
 		
+		if (initialCredit < 0) {
+			System.out.println("You cannot create a new current account with negative initial credit. Please try again with 0 or positive initial credit.");
+		}
+		
 		Optional<Customer> opt = customerDAO.findById(customerID);
 		
 		if (!opt.isPresent()) {
@@ -108,9 +117,11 @@ public class CustomersImpl implements Customers {
 			List<Account> list = customer.getAccounts();
 			
 			Account account = new Account();
-			account.setAccountId(list.size()+1);
+			account.setAccountId(list.size());
 			account.setAccountType(AccountType.CURRENT.toString());
-			account.setBalance(initialCredit);
+			
+			account = deposit(customer.getCustomerID(),account, initialCredit);
+			//account.setBalance(initialCredit);
 			
 			list.add(account);
 			
@@ -121,5 +132,32 @@ public class CustomersImpl implements Customers {
 		}
 		
 	}
+	
+	@Override
+	public Account deposit (Long customerID, Account account, double amount) {
+		 double newBlanace = account.getBalance() + amount;
+		 account.setBalance(newBlanace);
+		 
+		 transactions.addNewTransaction(customerID,account.getAccountId(), TransactionType.DEPOSIT, amount, newBlanace);
+		 
+		 return account;
+	 }
+
+	@Override
+	public Account withdraw (Long customerID, Account account, double amount) {
+	    	
+	    	if (account.getBalance() >= amount) {
+	    		 double newBlanace = account.getBalance() - amount;
+	    		 account.setBalance(newBlanace);
+	    		 
+	    		 transactions.addNewTransaction(customerID, account.getAccountId(), TransactionType.WITHDRAWAL, amount, newBlanace);
+	    		return account;
+	    	}
+	    	else {
+	    		System.out.println("Your balance is not enough to perform this withdrawal");
+	    		return null; //as a possible check that the withdrawal was  never completed. (or custom exception)
+	    	}
+	    	
+	    }
 
 }

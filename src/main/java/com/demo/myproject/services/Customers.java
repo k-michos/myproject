@@ -2,6 +2,7 @@ package com.demo.myproject.services;
 
 import java.util.List;
 
+import com.demo.myproject.entities.Account;
 import com.demo.myproject.entities.Customer;
 import com.demo.myproject.utils.CustomerNotFoundException;
 
@@ -18,5 +19,9 @@ public interface Customers {
 	public void deleteCustomer (Long id) throws CustomerNotFoundException;
 	
 	public Customer newCurrentAccount (Long customerID, double initialCredit) throws CustomerNotFoundException;
+	
+	 public Account deposit (Long customerID, Account account, double amount);
+	 
+	 public Account withdraw (Long customerID, Account account, double amount);
 		
 }
