@@ -3,13 +3,14 @@ package com.demo.myproject.services.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.demo.myproject.entities.Account;
 import com.demo.myproject.entities.Customer;
 import com.demo.myproject.repositories.CustomerDAO;
-import com.demo.myproject.repositories.TransactionDAO;
 import com.demo.myproject.services.Customers;
 import com.demo.myproject.services.Transactions;
 import com.demo.myproject.utils.Constants.AccountType;
@@ -18,6 +19,8 @@ import com.demo.myproject.utils.CustomerNotFoundException;
 
 @Service
 public class CustomersImpl implements Customers {
+	
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	private CustomerDAO customerDAO;
@@ -63,6 +66,7 @@ public class CustomersImpl implements Customers {
 //		}
 //		customer.setAccounts(list);
 		customerDAO.saveAndFlush(customer);
+		logger.debug("New customer = " + customer + " added.");
 		return customer;
 	}
 	
@@ -80,6 +84,7 @@ public class CustomersImpl implements Customers {
 			customer.setName(newName);
 			customer.setSurname(newSurname);
 			customerDAO.saveAndFlush(customer);
+			logger.debug("Customer = " + customer + " updated.");
 			return customer;
 		}
 	}
@@ -94,6 +99,7 @@ public class CustomersImpl implements Customers {
 	                "Could not find customer with customerId = " + id);
 		}
 		else {
+			logger.debug("Customer with id= " + id + " deleted.");
 			customerDAO.delete(opt.get());
 		}
 	}
@@ -127,6 +133,7 @@ public class CustomersImpl implements Customers {
 			
 			customer.setAccounts(list);
 			customerDAO.saveAndFlush(customer);
+			logger.debug("New account added for customer = " + customer);
 			return customer;
 			
 		}
@@ -139,6 +146,7 @@ public class CustomersImpl implements Customers {
 		 account.setBalance(newBlanace);
 		 
 		 transactions.addNewTransaction(customerID,account.getAccountId(), TransactionType.DEPOSIT, amount, newBlanace);
+		 logger.debug(amount + "deposit for accountId = " + account.getAccountId() + " of customerID = " + customerID);
 		 
 		 return account;
 	 }
@@ -151,9 +159,12 @@ public class CustomersImpl implements Customers {
 	    		 account.setBalance(newBlanace);
 	    		 
 	    		 transactions.addNewTransaction(customerID, account.getAccountId(), TransactionType.WITHDRAWAL, amount, newBlanace);
+	    		 
+	    		 logger.debug(amount + "withdrawal for accountId = " + account.getAccountId() + " of customerID = " + customerID);
 	    		return account;
 	    	}
 	    	else {
+	    		logger.info("customerID = " + customerID + "has no balance to perform this withdrawal");
 	    		System.out.println("Your balance is not enough to perform this withdrawal");
 	    		return null; //as a possible check that the withdrawal was  never completed. (or custom exception)
 	    	}

@@ -12,7 +12,6 @@ import com.demo.myproject.entities.Customer;
 import com.demo.myproject.entities.Transaction;
 import com.demo.myproject.repositories.CustomerDAO;
 import com.demo.myproject.repositories.TransactionDAO;
-import com.demo.myproject.services.Customers;
 import com.demo.myproject.services.Transactions;
 import com.demo.myproject.utils.CustomerNotFoundException;
 import com.demo.myproject.utils.TransactionNotFoundException;
