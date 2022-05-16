@@ -146,7 +146,7 @@ public class CustomersImpl implements Customers {
 		 account.setBalance(newBlanace);
 		 
 		 transactions.addNewTransaction(customerID,account.getAccountId(), TransactionType.DEPOSIT, amount, newBlanace);
-		 logger.debug(amount + "deposit for accountId = " + account.getAccountId() + " of customerID = " + customerID);
+		 logger.debug(amount + " deposit for accountId = " + account.getAccountId() + " of customerID = " + customerID);
 		 
 		 return account;
 	 }
@@ -160,11 +160,11 @@ public class CustomersImpl implements Customers {
 	    		 
 	    		 transactions.addNewTransaction(customerID, account.getAccountId(), TransactionType.WITHDRAWAL, amount, newBlanace);
 	    		 
-	    		 logger.debug(amount + "withdrawal for accountId = " + account.getAccountId() + " of customerID = " + customerID);
+	    		 logger.debug(amount + " withdrawal for accountId = " + account.getAccountId() + " of customerID = " + customerID);
 	    		return account;
 	    	}
 	    	else {
-	    		logger.info("customerID = " + customerID + "has no balance to perform this withdrawal");
+	    		logger.info("customerID = " + customerID + " has no balance to perform this withdrawal");
 	    		System.out.println("Your balance is not enough to perform this withdrawal");
 	    		return null; //as a possible check that the withdrawal was  never completed. (or custom exception)
 	    	}
