@@ -51,5 +51,5 @@ deploy-job:      # This job runs in the deploy stage.
     - MyDemoAppRunner
   script:
     - echo "Deploying application..."
-    - "mvn deploy"
+    - "mvn jar:jar deploy:deploy"
     - echo "Application successfully deployed."
