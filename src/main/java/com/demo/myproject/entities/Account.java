@@ -20,6 +20,13 @@ public class Account implements Serializable{
 		
 	}
 
+	public Account(int accountId, double balance, String accountType) {
+		super();
+		this.accountId = accountId;
+		this.balance = balance;
+		this.accountType = accountType;
+	}
+
 	public int getAccountId() {
 		return accountId;
 	}

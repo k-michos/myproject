@@ -1,5 +1,6 @@
 package com.demo.myproject.services.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,9 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.demo.myproject.entities.Account;
 import com.demo.myproject.entities.Customer;
+import com.demo.myproject.entities.Transaction;
 import com.demo.myproject.repositories.CustomerDAO;
 import com.demo.myproject.services.Customers;
 import com.demo.myproject.services.Transactions;
@@ -103,6 +106,55 @@ public class CustomersImpl implements Customers {
 			customerDAO.delete(opt.get());
 		}
 	}
+
+	@Override
+	public Customer getCustomerInfoById (Long customerID) throws CustomerNotFoundException{
+		
+		Customer customer = getCustomerById(customerID);
+		
+		List<Transaction> list = transactions.getAllTransactionsByCustomerID(customerID);
+					
+		HashMap<Integer, List<Transaction>> transactionsPerAccount = new HashMap<>();
+		
+		HashMap<Integer, Double> balancePerAccount = new HashMap<>();
+		
+		double totalBalance =0;
+		
+		int numberOfAccounts = customer.getAccounts().size();
+		
+		for (int i=0; i < numberOfAccounts ;i++) { 
+			transactionsPerAccount.put(i, transactions.getAllTransactionsPerAccount(i, list));
+			
+			double balance = customer.getAccounts().get(i).getBalance();
+			totalBalance = totalBalance + balance;
+			balancePerAccount.put(i, balance);
+			
+		}
+		
+		StringBuilder log = new StringBuilder();
+		log.append("\n");
+		log.append("The customerID you gave belongs to: " + customer.getName() + " " + customer.getSurname() + 
+				" and the total balance of all his accounts is: " + totalBalance + ". Per account: \n");
+		
+//		logger.debug("The customerID you gave belongs to: " + customer.getName() + " " + customer.getSurname() + 
+//				" and the total balance of all his accounts is: " + totalBalance + ". Per account: ");
+		
+		for (int i=0; i < numberOfAccounts ;i++) {
+			
+			log.append("\t" + "Account number: " + i + " has balance: " + balancePerAccount.get(i) + " with the following transactions: \n");
+			for (Transaction tr: transactionsPerAccount.get(i)) {
+				log.append("\t \t" + tr.toString() + "\n");
+			}
+			//log.append("\t \t" + transactionsPerAccount.get(i).toString() + "\n");
+			//System.out.println("\t" + "Account number: " + i + " has balance: " + balancePerAccount.get(i) + " with the following transactions: ");
+			//System.out.println("\t \t" + transactionsPerAccount.get(i).toString());
+		}
+		log.append("End of customer \n");
+		logger.debug(log.toString());
+		//System.out.println("End of customer");
+		return customer;
+		
+	}
 	
 	@Override
 	public Customer newCurrentAccount (Long customerID, double initialCredit) throws CustomerNotFoundException {
@@ -126,7 +178,7 @@ public class CustomersImpl implements Customers {
 			account.setAccountId(list.size());
 			account.setAccountType(AccountType.CURRENT.toString());
 			
-			account = deposit(customer.getCustomerID(),account, initialCredit);
+			account = deposit(customer.getCustomerID(),account.getAccountId(), initialCredit);
 			//account.setBalance(initialCredit);
 			
 			list.add(account);
@@ -141,7 +193,8 @@ public class CustomersImpl implements Customers {
 	}
 	
 	@Override
-	public Account deposit (Long customerID, Account account, double amount) {
+	public Account deposit (Long customerID, int accountId, double amount) throws CustomerNotFoundException {
+		Account account = getCustomerById(customerID).getAccounts().get(accountId);
 		 double newBlanace = account.getBalance() + amount;
 		 account.setBalance(newBlanace);
 		 
@@ -152,7 +205,8 @@ public class CustomersImpl implements Customers {
 	 }
 
 	@Override
-	public Account withdraw (Long customerID, Account account, double amount) {
+	public Account withdraw (Long customerID, int accountId, double amount) throws CustomerNotFoundException{
+			Account account = getCustomerById(customerID).getAccounts().get(accountId);
 	    	
 	    	if (account.getBalance() >= amount) {
 	    		 double newBlanace = account.getBalance() - amount;

@@ -12,7 +12,7 @@ public interface Customers {
 	
 	public Customer getCustomerById(Long id) throws CustomerNotFoundException;
 	
-	public Customer addNewCustomer(String name, String surname) ;
+	public Customer addNewCustomer(String name, String surname);
 	
 	public Customer updateCustomer(Long id, String newName, String newSurname) throws CustomerNotFoundException;
 	
@@ -20,8 +20,10 @@ public interface Customers {
 	
 	public Customer newCurrentAccount (Long customerID, double initialCredit) throws CustomerNotFoundException;
 	
-	 public Account deposit (Long customerID, Account account, double amount);
+	 public Account deposit (Long customerID, int accountId, double amount) throws CustomerNotFoundException;
 	 
-	 public Account withdraw (Long customerID, Account account, double amount);
+	 public Account withdraw (Long customerID, int accountId, double amount) throws CustomerNotFoundException;
+	 
+	 public Customer getCustomerInfoById (Long customerID) throws CustomerNotFoundException;
 		
 }
