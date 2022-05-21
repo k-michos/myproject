@@ -1,4 +1,4 @@
-package com.demo.myproject.web.endpoints;
+package com.demo.myproject.endpoints.rest;
 
 
 import java.util.List;
@@ -23,7 +23,7 @@ import com.demo.myproject.utils.CustomerNotFoundException;
 
 @RestController
 @RequestMapping("/customers")
-public class CustomerRestEndpoint {
+public class CustomerEndpoint {
 	
 		Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -100,8 +100,7 @@ public class CustomerRestEndpoint {
 			catch(CustomerNotFoundException ex) {
 				logger.error(ex.getMessage(), ex);
 				return null;
-			}
-			
+			}	
 		}
 		
 		@PutMapping("/deposit")

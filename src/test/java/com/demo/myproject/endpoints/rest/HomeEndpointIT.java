@@ -1,4 +1,4 @@
-package com.demo.myproject.web;
+package com.demo.myproject.endpoints.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,7 +14,7 @@ import com.demo.myproject.utils.DemoApplication;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = DemoApplication.class)
-public class SimpleControllerIT {
+public class HomeEndpointIT {
 	
 	
 	@Value("${spring.application.name}")
@@ -27,7 +27,7 @@ public class SimpleControllerIT {
     public void getHello() throws Exception {
         ResponseEntity<String> response = template.getForEntity("/", String.class);
         
-        assertThat(response.getBody()).isEqualTo("Hello! This is a " + appName);
+        assertThat(response.getBody()).isEqualTo("This is a " + appName);
     }
 
 }

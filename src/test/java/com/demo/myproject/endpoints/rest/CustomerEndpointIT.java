@@ -1,4 +1,4 @@
-package com.demo.myproject.web.endpoints;
+package com.demo.myproject.endpoints.rest;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -34,7 +34,7 @@ import com.demo.myproject.utils.DemoApplication;
 @SpringBootTest
 @ContextConfiguration(classes = DemoApplication.class)
 @AutoConfigureMockMvc
-public class CustomerRestEndpointIT {
+public class CustomerEndpointIT {
 
     @MockBean
     Customers mockCustomers;
@@ -155,7 +155,7 @@ public class CustomerRestEndpointIT {
     	Account account = customer.getAccounts().get(0);
     	double amount = 1;
     	account.setBalance(account.getBalance() + amount);
-    	when(mockCustomers.deposit(customer.getCustomerID(), account.getAccountId(), amount)).thenReturn(account);
+    	when(mockCustomers.deposit(customer.getCustomerID(), account.getAccountId(), amount)).thenReturn(account); 
     	
     	LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
     	params.add("customerID", customer.getCustomerID().toString());

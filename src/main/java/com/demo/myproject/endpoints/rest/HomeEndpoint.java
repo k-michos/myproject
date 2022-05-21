@@ -1,4 +1,4 @@
-package com.demo.myproject.web;
+package com.demo.myproject.endpoints.rest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("/")
-public class SimpleController {
+public class HomeEndpoint {
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 		
@@ -16,7 +16,7 @@ public class SimpleController {
 
     @GetMapping
     public String homePage() {
-    	String s = "Hello! This is a " + appName;
+    	String s = "This is a " + appName;
     	System.out.println(s);
     	
     	logger.trace("A TRACE Message");

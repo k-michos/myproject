@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>View Customer</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css">
+</head>
+<body class="container">
+<h1 class="py-5">Customer with id</h1>
+<form class="col card p-3 my-5" method="post" th:action="@{/webapp/customers/all}" th:object="${customer}">
+	
+	<div class="form-group">
+        <label for="customerID">CustomerID</label>
+		<!-- <td th:text="${customer.customerID}"></td> -->
+		<input class="form-control" id="customerID" required readonly th:field="*{customerID}" type="text"/>
+	</div>
+
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input class="form-control" id="name"  required th:field="*{name}" type="text"/>
+    </div>
+    
+    <div class="form-group">
+        <label for="surname">Surname</label>
+        <input class="form-control" id="surname"  required th:field="*{surname}" type="text"/>
+    </div>
+    <!--  
+    <div class="form-group">
+        <label for="role">Role</label>
+        <select class="form-control " id="role" required th:field="*{role}">
+            <option hidden value="">Select a role</option>
+            <option
+                    th:each="role : ${T(com.springhow.examples.springboot.thymeleaf.crud.domain.entities.Role).values()}"
+                    th:text="${role}"
+                    th:value="${role}">
+            </option>
+        </select>
+    </div> 
+   !! placeholder="Enter Name" placeholder="Enter Surname" 
+    <input id="activeFlag" type="hidden" th:field="*{active}"> -->
+    <div>
+        <input class="btn btn-success" th:formaction="'/myapp/webapp/customers/update/'" type="submit" value="Update">
+        <input class="btn btn-danger" th:formaction="'/myapp/webapp/customers/delete/'" type="submit" value="Delete">
+    </div>
+</form>
+<a th:href="@{/webapp/customers/getCustomerInfo/}+${customer.customerID}"><input type="button" class="btn btn-primary" value="Go to Customers Info"></a>
+</body>
+</html>

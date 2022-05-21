@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.demo.myproject.entities.Account;
 import com.demo.myproject.entities.Customer;
@@ -38,6 +37,13 @@ public class CustomersImpl implements Customers {
 
 	@Override
 	public Customer getCustomerById(Long id) throws CustomerNotFoundException {
+		
+//		try {
+//			return customerDAO.getById(id);
+//		}catch(Exception ex) {
+//			throw new CustomerNotFoundException(
+//	                "Could not find customer with customerId = " + id, ex);
+//		}
 		
 		Optional<Customer> opt = customerDAO.findById(id);
 		
@@ -76,35 +82,65 @@ public class CustomersImpl implements Customers {
 	@Override
 	public Customer updateCustomer(Long id, String newName, String newSurname) throws CustomerNotFoundException {
 		
-		Optional<Customer> opt = customerDAO.findById(id);
-		
-		if (!opt.isPresent()) {
-			throw new CustomerNotFoundException(
-	                "Could not find customer with customerId = " + id);
-		}
-		else {
-			Customer customer = opt.get();
+		//try {
+			//Customer customer = customerDAO.getById(id);
+		Customer customer = getCustomerById(id);
 			customer.setName(newName);
 			customer.setSurname(newSurname);
 			customerDAO.saveAndFlush(customer);
 			logger.debug("Customer = " + customer + " updated.");
 			return customer;
-		}
+		
+//		}catch(Exception ex) {
+//		throw new CustomerNotFoundException(
+//                "Could not find customer with customerId = " + id, ex);
+//	}
+		//TODO
+//		Optional<Customer> opt = customerDAO.findById(id);
+//		
+//		if (!opt.isPresent()) {
+//			throw new CustomerNotFoundException(
+//	                "Could not find customer with customerId = " + id);
+//		}
+//		else {
+//			Customer customer = opt.get();
+//			customer.setName(newName);
+//			customer.setSurname(newSurname);
+//			customerDAO.saveAndFlush(customer);
+//			logger.debug("Customer = " + customer + " updated.");
+//			return customer;
+//		}
 	}
 	
 	@Override
 	public void deleteCustomer (Long id) throws CustomerNotFoundException {
 		
-		Optional<Customer> opt = customerDAO.findById(id);
+		Customer customer = getCustomerById(id);
 		
-		if (!opt.isPresent()) {
-			throw new CustomerNotFoundException(
-	                "Could not find customer with customerId = " + id);
-		}
-		else {
-			logger.debug("Customer with id= " + id + " deleted.");
-			customerDAO.delete(opt.get());
-		}
+		logger.debug("Customer with id= " + id + " deleted.");
+		customerDAO.delete(customer);
+		
+//		try {
+//			Customer customer =  customerDAO.getById(id);
+//			
+//			logger.debug("Customer with id= " + id + " deleted.");
+//			customerDAO.delete(customer);
+//			
+//		}catch(Exception ex) {
+//			throw new CustomerNotFoundException(
+//	                "Could not find customer with customerId = " + id, ex);
+//		}
+		//TODO
+//		Optional<Customer> opt = customerDAO.findById(id);
+//		
+//		if (!opt.isPresent()) {
+//			throw new CustomerNotFoundException(
+//	                "Could not find customer with customerId = " + id);
+//		}
+//		else {
+//			logger.debug("Customer with id= " + id + " deleted.");
+//			customerDAO.delete(opt.get());
+//		}
 	}
 
 	@Override
@@ -163,49 +199,102 @@ public class CustomersImpl implements Customers {
 			System.out.println("You cannot create a new current account with negative initial credit. Please try again with 0 or positive initial credit.");
 		}
 		
-		Optional<Customer> opt = customerDAO.findById(customerID);
 		
-		if (!opt.isPresent()) {
-			throw new CustomerNotFoundException(
-	                "Could not find customer with customerId = " + customerID);
-		}
-		else {
-			Customer customer = opt.get();
-			
-			List<Account> list = customer.getAccounts();
-			
-			Account account = new Account();
-			account.setAccountId(list.size());
-			account.setAccountType(AccountType.CURRENT.toString());
-			
-			account = deposit(customer.getCustomerID(),account.getAccountId(), initialCredit);
-			//account.setBalance(initialCredit);
-			
-			list.add(account);
-			
-			customer.setAccounts(list);
-			customerDAO.saveAndFlush(customer);
-			logger.debug("New account added for customer = " + customer);
-			return customer;
-			
-		}
+		Customer customer = getCustomerById(customerID);
+		
+		List<Account> list = customer.getAccounts();
+		
+		Account account = new Account();
+		account.setAccountId(list.size());
+		account.setAccountType(AccountType.CURRENT.toString());
+		
+		list.add(account);
+		customer.setAccounts(list);
+		customerDAO.saveAndFlush(customer);
+		account = deposit(customer.getCustomerID(),account.getAccountId(), initialCredit);
+		
+		
+		
+		
+		//account = deposit(customer.getCustomerID(),account.getAccountId(), initialCredit);
+		//account.setBalance(initialCredit);
+		
+		
+		
+		
+		logger.debug("New account added for customer = " + customer);
+		return customer;
+		
+//		Optional<Customer> opt = customerDAO.findById(customerID);
+//		
+//		if (!opt.isPresent()) {
+//			throw new CustomerNotFoundException(
+//	                "Could not find customer with customerId = " + customerID);
+//		}
+//		else {
+//			Customer customer = opt.get();
+//			
+//			List<Account> list = customer.getAccounts();
+//			
+//			Account account = new Account();
+//			account.setAccountId(list.size());
+//			account.setAccountType(AccountType.CURRENT.toString());
+//			
+//			account = deposit(customer.getCustomerID(),account.getAccountId(), initialCredit);
+//			//account.setBalance(initialCredit);
+//			
+//			list.add(account);
+//			
+//			customer.setAccounts(list);
+//			customerDAO.saveAndFlush(customer);
+//			logger.debug("New account added for customer = " + customer);
+//			return customer;
+//			
+//		}
 		
 	}
 	
 	@Override
-	public Account deposit (Long customerID, int accountId, double amount) throws CustomerNotFoundException {
-		Account account = getCustomerById(customerID).getAccounts().get(accountId);
-		 double newBlanace = account.getBalance() + amount;
-		 account.setBalance(newBlanace);
-		 
-		 transactions.addNewTransaction(customerID,account.getAccountId(), TransactionType.DEPOSIT, amount, newBlanace);
-		 logger.debug(amount + " deposit for accountId = " + account.getAccountId() + " of customerID = " + customerID);
-		 
-		 return account;
+	public Account deposit (Long customerID, int accountId, double amount) throws CustomerNotFoundException { //(Long customerID, int accountId, double amount) throws CustomerNotFoundException {
+		
+		if (getCustomerById(customerID).getAccounts().isEmpty()) {
+			logger.info("customerID = " + customerID + " has not any accounts to perform this action.");
+			System.out.println("You have not any accounts to perform this action.");
+			return null;
+		}
+		else if(getCustomerById(customerID).getAccounts().size() <= accountId){
+			logger.info("For customerID = " + customerID + " there is no account with id = " + accountId);
+			System.out.println("There is no account with this id.");
+			return null;
+		}
+		else {
+			Account account = getCustomerById(customerID).getAccounts().get(accountId);
+			double newBlanace = account.getBalance() + amount;
+			account.setBalance(newBlanace);
+			 
+			transactions.addNewTransaction(customerID,account.getAccountId(), TransactionType.DEPOSIT, amount, newBlanace);
+			logger.debug(amount + " deposit for accountId = " + account.getAccountId() + " of customerID = " + customerID);
+			 
+			return account;
+		}
+		
+		
 	 }
 
 	@Override
 	public Account withdraw (Long customerID, int accountId, double amount) throws CustomerNotFoundException{
+		
+		if (getCustomerById(customerID).getAccounts().isEmpty()) {
+			logger.info("customerID = " + customerID + " has not any accounts to perform this action.");
+			System.out.println("You have not any accounts to perform this action.");
+			return null;
+		}
+		else if(getCustomerById(customerID).getAccounts().size() <= accountId){
+			logger.info("For customerID = " + customerID + " there is no account with id = " + accountId);
+			System.out.println("There is no account with this id.");
+			return null;
+		}
+		else {
 			Account account = getCustomerById(customerID).getAccounts().get(accountId);
 	    	
 	    	if (account.getBalance() >= amount) {
@@ -222,7 +311,10 @@ public class CustomersImpl implements Customers {
 	    		System.out.println("Your balance is not enough to perform this withdrawal");
 	    		return null; //as a possible check that the withdrawal was  never completed. (or custom exception)
 	    	}
+		}
+		}
+			
 	    	
-	    }
+	    
 
 }
