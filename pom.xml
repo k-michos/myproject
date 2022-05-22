@@ -81,7 +81,7 @@
                 <version>2.2.0</version>
                 <configuration>
                     <to>
-                        <image>${kmichos}/myproject</image>
+                        <image>kmichos/myproject</image>
                         <tags>
                             <tag>${project.version}</tag>
                             <tag>latest</tag>
