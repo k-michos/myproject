@@ -46,5 +46,5 @@ deploy-job:      # This job runs in the deploy stage.
   script:
     - echo "Deploying application..."
    # - "mvn spring-boot:run"
-    - mvn deploy jib:build -P deploy-docker
+    - mvn deploy -DskipTests jib:build -P deploy-docker
     - echo "Application successfully deployed."
