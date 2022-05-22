@@ -24,7 +24,9 @@ build-job:       # This job runs in the build stage, which runs first.
     - MyDemoAppRunner
   script:
     - echo "Compiling the code..."
-    - "mvn clean install"
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - mvn clean install
+    #"./mvnw clean install"
     - echo "Compile complete."
 
 unit-test-job:   # This job runs in the test stage.
@@ -44,4 +46,5 @@ deploy-job:      # This job runs in the deploy stage.
   script:
     - echo "Deploying application..."
    # - "mvn spring-boot:run"
+    - mvn deploy jib:build -P deploy-docker
     - echo "Application successfully deployed."
