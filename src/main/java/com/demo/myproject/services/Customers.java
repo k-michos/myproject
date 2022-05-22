@@ -2,8 +2,11 @@ package com.demo.myproject.services;
 
 import java.util.List;
 
+import com.demo.myproject.endpoints.webapp.dto.CustomerInfoDTO;
+import com.demo.myproject.endpoints.webapp.dto.TransactionsPerAccountDTO;
 import com.demo.myproject.entities.Account;
 import com.demo.myproject.entities.Customer;
+import com.demo.myproject.entities.Transaction;
 import com.demo.myproject.utils.CustomerNotFoundException;
 
 public interface Customers {
@@ -24,6 +27,8 @@ public interface Customers {
 	 
 	 public Account withdraw (Long customerID, int accountId, double amount) throws CustomerNotFoundException;
 	 
-	 public Customer getCustomerInfoById (Long customerID) throws CustomerNotFoundException;
+	 public CustomerInfoDTO getCustomerInfoById (Long customerID) throws CustomerNotFoundException;
+	 
+	 public TransactionsPerAccountDTO getTransactionsForAccountId(List<Transaction> listAll, int accountId);
 		
 }

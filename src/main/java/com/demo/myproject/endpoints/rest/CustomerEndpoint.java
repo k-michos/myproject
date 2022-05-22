@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.demo.myproject.endpoints.webapp.dto.CustomerInfoDTO;
 import com.demo.myproject.entities.Account;
 import com.demo.myproject.entities.Customer;
 import com.demo.myproject.services.Customers;
@@ -92,7 +93,7 @@ public class CustomerEndpoint {
 		}
 		
 		@GetMapping("/getCustomerInfo/{customerID}")
-		public Customer getCustomerInfoById (@PathVariable(required = true) Long customerID) {
+		public CustomerInfoDTO getCustomerInfoById (@PathVariable(required = true) Long customerID) {
 			logger.info("CustomerRestEndpoint::getCustomerInfoById method revoked.");
 			try {
 				return customers.getCustomerInfoById(customerID);

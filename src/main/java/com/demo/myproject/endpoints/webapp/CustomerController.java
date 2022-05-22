@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.demo.myproject.endpoints.webapp.dto.CustomerInfoWrapper;
+import com.demo.myproject.endpoints.webapp.dto.CustomerInfoDTO;
+import com.demo.myproject.endpoints.webapp.dto.TransactionsPerAccountDTO;
 import com.demo.myproject.entities.Customer;
 import com.demo.myproject.services.Customers;
 import com.demo.myproject.utils.CustomerNotFoundException;
@@ -91,12 +92,12 @@ public class CustomerController {
 	
 	@GetMapping("/getCustomerInfo/{customerID}")
 	public String getCustomerInfoById (Model model, RedirectAttributes redirectAttributes, @PathVariable Long customerID) throws CustomerNotFoundException {
-		logger.info("CustomerRestEndpoint::getCustomerInfoById method revoked.");
+		logger.info("CustomerController::getCustomerInfoById method revoked.");
 		
-		Customer customer = customers.getCustomerInfoById(customerID);
-		CustomerInfoWrapper customerInfoWrapper = new CustomerInfoWrapper();
-		customerInfoWrapper.setCustomer(customer);
-		model.addAttribute("customerInfoWrapper", customerInfoWrapper);
+		CustomerInfoDTO customerInfoDTO = customers.getCustomerInfoById(customerID);
+		//CustomerInfoWrapper customerInfoWrapper = new CustomerInfoWrapper();
+		//customerInfoDTO.setCustomer(customer);
+		model.addAttribute("customerInfoDTO", customerInfoDTO);
 		//double initialCredit=1;
 		
 		//model.addAttribute("customer", customer);
@@ -112,9 +113,9 @@ public class CustomerController {
 	}
 	
 	@PostMapping("/newCurrentAccount/{customerID}")
-	public RedirectView newCurrentAccount (Model model, RedirectAttributes redirectAttributes, @PathVariable Long customerID, @ModelAttribute CustomerInfoWrapper customerInfoWrapper) throws CustomerNotFoundException {
-		logger.info("CustomerRestEndpoint::newCurrentAccount method revoked.");
-		model.addAttribute("customerInfoWrapper", customerInfoWrapper);
+	public RedirectView newCurrentAccount (Model model, RedirectAttributes redirectAttributes, @PathVariable Long customerID, @ModelAttribute CustomerInfoDTO customerInfoDTO) throws CustomerNotFoundException {
+		logger.info("CustomerController::newCurrentAccount method revoked.");
+		model.addAttribute("customerInfoDTO", customerInfoDTO);
 //		double initialCredit=0;
 //		model.addAttribute("initialCredit", initialCredit);
 		System.out.println(model);
@@ -122,7 +123,7 @@ public class CustomerController {
 		
 		//double initialCredit= Double.parseDouble(customerInfoWrapper.getInitialCredit());
 				
-		customers.newCurrentAccount(customerID, customerInfoWrapper.getInitialCredit());
+		customers.newCurrentAccount(customerID, customerInfoDTO.getInitialCredit());
 		
 		String message="Current Account added!";
 		RedirectView redirectView=new RedirectView("/webapp/customers/getCustomerInfo/" + customerID,true);
@@ -137,8 +138,42 @@ public class CustomerController {
 		
 	}
 	
-//	@PostMapping("/transactions/{customerID}")
-//	public String getTransactionsPerAccount (Model model, @PathVariable Long customerID) {
+	@PostMapping("/transactions/{customerID}")
+	public String getAllTransactions (Model model, @PathVariable Long customerID, @ModelAttribute CustomerInfoDTO customerInfoDTO) {
+		logger.info("CustomerController::getAllTransactions method revoked.");
+		//CustomerInfoDTO customerInfoDTO = customers.getCustomerInfoById(customerID);
+		System.out.println(model);
+		model.addAttribute("customerInfoDTO", customerInfoDTO);
+		//TransactionsPerAccountDTO transactionsPerAccountDTO = new TransactionsPerAccountDTO();
+		//model.addAttribute("transactionsPerAccountDTO", transactionsPerAccountDTO);
+		return "allTransactions";
+	}
+	
+//	@PostMapping("/transactionsForAccount/{customerID}")
+//	public String getTransactionsForAccountId (Model model, @PathVariable Long customerID, @ModelAttribute TransactionsPerAccountDTO transactionsPerAccountDTO) throws CustomerNotFoundException{
+//		logger.info("CustomerController::getTransactionsForAccountId method revoked.");
+//		System.out.println(model);
+//		CustomerInfoDTO customerInfoDTO = customers.getCustomerInfoById(customerID);
+//		transactionsPerAccountDTO = customers.getTransactionsForAccountId(customerInfoDTO.getList(), transactionsPerAccountDTO.getAccountId());
+//		model.addAttribute("transactionsPerAccountDTO", transactionsPerAccountDTO);
+//		model.addAttribute("customerInfoDTO", customerInfoDTO);
 //		
+//		return "transactionsPerAccount";
 //	}
+	
+	@PostMapping("/transactionsForAccount/{accountId}")
+	public String getTransactionsForAccountId (Model model, @PathVariable int accountId, @ModelAttribute CustomerInfoDTO customerInfoDTO) throws CustomerNotFoundException{
+		logger.info("CustomerController::getTransactionsForAccountId method revoked.");
+		System.out.println(model);
+		TransactionsPerAccountDTO transactionsPerAccountDTO = customers.getTransactionsForAccountId(customerInfoDTO.getList(), accountId);
+		model.addAttribute("transactionsPerAccountDTO", transactionsPerAccountDTO);
+		model.addAttribute("account", customerInfoDTO.getCustomer().getAccounts().get(accountId));
+		//model.addAttribute("customerInfoDTO", customerInfoDTO);
+		
+		//CustomerInfoDTO customerInfoDTO = customers.getCustomerInfoById(customerID);
+		//transactionsPerAccountDTO = customers.getTransactionsForAccountId(model.getAttribute("customerInfoDTO")., transactionsPerAccountDTO.getAccountId());
+		
+		System.out.println(model);
+		return "transactionsPerAccount";
+	}
 }

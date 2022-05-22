@@ -10,6 +10,15 @@
 <body class="container">
 <h1 class="py-5">Customer Info</h1>
 <h2 class="py-5">Accounts</h2>
+<h3 class="py-5">Total balance: <span th:text="${customerInfoDTO.totalBalance}"></span></h3>
+<form method="post" th:action="@{/webapp/customers/transactions/{id}(id=${customerInfoDTO.customer.customerID})}" th:object="${customerInfoDTO}"  class="col card p-3 mb-5">
+        		<input type="hidden" id="customer" 	th:field="*{customer}">
+        		<input type="hidden" id="list" 	th:field="*{list}">
+        		<input type="hidden" id="initialCredit" 		th:field="*{initialCredit}">
+        		<input type="hidden" id="totalBalance" 		th:field="*{totalBalance}" >
+        		<input type="submit" value="All Transactions">
+        	</form>
+        	
 <table class="table table-striped table-bordered">
     <tr>
         <th>AccountId</th>
@@ -17,14 +26,26 @@
         <th>Account Type</th>
         <th>Actions</th>
     </tr>
-    <tr th:if="${#lists.isEmpty(customerInfoWrapper.customer.accounts)}">
+    <tr th:if="${#lists.isEmpty(customerInfoDTO.customer.accounts)}">
         <td colspan="5">No Records found. Add some...!</td>
     </tr>
-    <tr th:each="account : ${customerInfoWrapper.customer.accounts}">
+    <tr th:each="account : ${customerInfoDTO.customer.accounts}">
         <td th:text="${account.accountId}"></td>
         <td th:text="${account.balance}"></td>
         <td th:text="${account.accountType}"></td>     
-        <td> <a th:href="@{/webapp/customers/transactions/{id}(id=${customerInfoWrapper.customer.customerID})}">Transactions</a> </td>   
+        <!-- <td> <a th:href="@{/webapp/customers/transactions/{id}(id=${customerInfoDTO.customer.customerID})}">Transactions</a> </td>   -->
+         
+        <td> 
+        	<form method="post" th:action="@{/webapp/customers/transactionsForAccount/{id}(id=${account.accountId})}" th:object="${customerInfoDTO}"  class="col card p-3 mb-5">
+        	<!-- 	<input type="hidden" id="list" 	th:field="${customerInfoDTO.list}"> 
+        		  <input type="hidden" id="accountId" 		th:field="*{accountId}" th:value="${account.accountId}"> -->
+        		  <input type="hidden" id="customer" 	th:field="*{customer}">
+        		<input type="hidden" id="list" 	th:field="*{list}">
+        		<input type="hidden" id="initialCredit" 		th:field="*{initialCredit}">
+        		<input type="hidden" id="totalBalance" 		th:field="*{totalBalance}" >
+        		<input type="submit" value="See Transactions">
+        	</form>
+        </td> 
     </tr>
 </table>
 
@@ -32,7 +53,7 @@
 
 
 <h2 class="py-5">Add New Current Account</h2>
-<form method="post" th:action="@{/webapp/customers/newCurrentAccount/{id}(id=${customerInfoWrapper.customer.customerID})}" th:object="${customerInfoWrapper}"  class="col card p-3 mb-5">
+<form method="post" th:action="@{/webapp/customers/newCurrentAccount/{id}(id=${customerInfoDTO.customer.customerID})}" th:object="${customerInfoDTO}"  class="col card p-3 mb-5">
 
 
     <div class="form-group">
@@ -56,5 +77,6 @@
     </div> -->
     <input type="submit" class="btn btn-primary"  value="New Current Account">
 </form>
+<a th:href="@{/webapp/customers/all}"><input type="button" class="btn btn-primary" value="Go to Customers"></a>
 </body>
 </html>

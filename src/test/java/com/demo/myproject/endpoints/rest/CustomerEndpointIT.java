@@ -23,7 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 
-
+import com.demo.myproject.endpoints.webapp.dto.CustomerInfoDTO;
 import com.demo.myproject.entities.Account;
 import com.demo.myproject.entities.Customer;
 import com.demo.myproject.services.Customers;
@@ -114,10 +114,11 @@ public class CustomerEndpointIT {
     
     @Test
     public void getCustomerInfoById () throws Exception {
-    	
+    	CustomerInfoDTO customerInfoDTO = new CustomerInfoDTO();
     	Customer customer = createDummyCustomer();
+    	customerInfoDTO.setCustomer(customer);
     	
-    	when(mockCustomers.getCustomerInfoById(customer.getCustomerID())).thenReturn(customer);;
+    	when(mockCustomers.getCustomerInfoById(customer.getCustomerID())).thenReturn(customerInfoDTO);;
     	
     	//when(endpoint).getCustomerInfoById(customer.getCustomerID());
 

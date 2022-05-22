@@ -1,5 +1,6 @@
 package com.demo.myproject.services.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.demo.myproject.endpoints.webapp.dto.CustomerInfoDTO;
+import com.demo.myproject.endpoints.webapp.dto.TransactionsPerAccountDTO;
 import com.demo.myproject.entities.Account;
 import com.demo.myproject.entities.Customer;
 import com.demo.myproject.entities.Transaction;
@@ -93,7 +96,7 @@ public class CustomersImpl implements Customers {
 	}
 
 	@Override
-	public Customer getCustomerInfoById (Long customerID) throws CustomerNotFoundException{
+	public CustomerInfoDTO getCustomerInfoById (Long customerID) throws CustomerNotFoundException{
 		
 		Customer customer = getCustomerById(customerID);
 		
@@ -126,18 +129,30 @@ public class CustomersImpl implements Customers {
 		
 		for (int i=0; i < numberOfAccounts ;i++) {
 			
+			
 			log.append("\t" + "Account number: " + i + " has balance: " + balancePerAccount.get(i) + " with the following transactions: \n");
 			for (Transaction tr: transactionsPerAccount.get(i)) {
 				log.append("\t \t" + tr.toString() + "\n");
+				
 			}
 			//log.append("\t \t" + transactionsPerAccount.get(i).toString() + "\n");
 			//System.out.println("\t" + "Account number: " + i + " has balance: " + balancePerAccount.get(i) + " with the following transactions: ");
 			//System.out.println("\t \t" + transactionsPerAccount.get(i).toString());
+		
 		}
+		
 		log.append("End of customer \n");
 		logger.debug(log.toString());
 		//System.out.println("End of customer");
-		return customer;
+		
+		CustomerInfoDTO customerInfoDTO = new CustomerInfoDTO();
+		customerInfoDTO.setCustomer(customer);
+		customerInfoDTO.setList(list);
+		customerInfoDTO.setTotalBalance(totalBalance);
+		customerInfoDTO.setTransactionsPerAccount(transactionsPerAccount);
+		
+		
+		return customerInfoDTO;
 		
 	}
 	
@@ -230,8 +245,21 @@ public class CustomersImpl implements Customers {
 	    	}
 		}
 		}
-			
-	    	
+	
+	@Override
+	public TransactionsPerAccountDTO getTransactionsForAccountId(List<Transaction> listAll, int accountId) {
+		TransactionsPerAccountDTO dto = new TransactionsPerAccountDTO();
+		List<Transaction> listPerAccount = new ArrayList<Transaction>();
+		
+		for (Transaction tr: listAll) {
+			if (tr.getAccountID()==accountId) {
+				listPerAccount.add(tr);
+			}	
+		}
+		dto.setAccountId(accountId);
+		dto.setList(listPerAccount);
+		return dto;
+	}    	
 	    
 
 }
