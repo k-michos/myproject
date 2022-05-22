@@ -26,7 +26,7 @@ public class CustomersImpl implements Customers {
 	
 	@Autowired
 	private CustomerDAO customerDAO;
-	
+		
 	@Autowired
 	private Transactions transactions;
 
@@ -63,18 +63,8 @@ public class CustomersImpl implements Customers {
 		Customer customer = new Customer(); 
 		customer.setName(name);
 		customer.setSurname(surname);
-		
-//		List<Account> list = customer.getAccounts();
-//		
-//		if (list.isEmpty()) {
-//			Account account = new Account();
-//			account.setAccountId(0);
-//			account.setBalance(100);
-//			account.setAccountType(AccountType.CURRENT.toString());
-//			list.add(account);
-//		}
-//		customer.setAccounts(list);
 		customerDAO.saveAndFlush(customer);
+		
 		logger.debug("New customer = " + customer + " added.");
 		return customer;
 	}
@@ -82,34 +72,14 @@ public class CustomersImpl implements Customers {
 	@Override
 	public Customer updateCustomer(Long id, String newName, String newSurname) throws CustomerNotFoundException {
 		
-		//try {
-			//Customer customer = customerDAO.getById(id);
 		Customer customer = getCustomerById(id);
-			customer.setName(newName);
-			customer.setSurname(newSurname);
-			customerDAO.saveAndFlush(customer);
-			logger.debug("Customer = " + customer + " updated.");
-			return customer;
+		customer.setName(newName);
+		customer.setSurname(newSurname);
+		customerDAO.saveAndFlush(customer);
 		
-//		}catch(Exception ex) {
-//		throw new CustomerNotFoundException(
-//                "Could not find customer with customerId = " + id, ex);
-//	}
-		//TODO
-//		Optional<Customer> opt = customerDAO.findById(id);
-//		
-//		if (!opt.isPresent()) {
-//			throw new CustomerNotFoundException(
-//	                "Could not find customer with customerId = " + id);
-//		}
-//		else {
-//			Customer customer = opt.get();
-//			customer.setName(newName);
-//			customer.setSurname(newSurname);
-//			customerDAO.saveAndFlush(customer);
-//			logger.debug("Customer = " + customer + " updated.");
-//			return customer;
-//		}
+		logger.debug("Customer = " + customer + " updated.");
+		return customer;
+		
 	}
 	
 	@Override
@@ -119,28 +89,7 @@ public class CustomersImpl implements Customers {
 		
 		logger.debug("Customer with id= " + id + " deleted.");
 		customerDAO.delete(customer);
-		
-//		try {
-//			Customer customer =  customerDAO.getById(id);
-//			
-//			logger.debug("Customer with id= " + id + " deleted.");
-//			customerDAO.delete(customer);
-//			
-//		}catch(Exception ex) {
-//			throw new CustomerNotFoundException(
-//	                "Could not find customer with customerId = " + id, ex);
-//		}
-		//TODO
-//		Optional<Customer> opt = customerDAO.findById(id);
-//		
-//		if (!opt.isPresent()) {
-//			throw new CustomerNotFoundException(
-//	                "Could not find customer with customerId = " + id);
-//		}
-//		else {
-//			logger.debug("Customer with id= " + id + " deleted.");
-//			customerDAO.delete(opt.get());
-//		}
+
 	}
 
 	@Override
@@ -205,53 +154,21 @@ public class CustomersImpl implements Customers {
 		List<Account> list = customer.getAccounts();
 		
 		Account account = new Account();
-		account.setAccountId(list.size());
-		account.setAccountType(AccountType.CURRENT.toString());
 		
-		list.add(account);
-		customer.setAccounts(list);
+		account.setAccountId(list.size());
+		//account.setCustomer(customer);
+		//account.setAccountType(AccountType.CURRENT.toString());
+		account.setAccountType(AccountType.CURRENT);
+		//accountDAO.saveAndFlush(account);
+		customer.addAccount(account);
+		//customer.setAccounts(list);
 		customerDAO.saveAndFlush(customer);
 		account = deposit(customer.getCustomerID(),account.getAccountId(), initialCredit);
 		
-		
-		
-		
-		//account = deposit(customer.getCustomerID(),account.getAccountId(), initialCredit);
-		//account.setBalance(initialCredit);
-		
-		
-		
-		
+		logger.debug(customer.toString());
 		logger.debug("New account added for customer = " + customer);
 		return customer;
-		
-//		Optional<Customer> opt = customerDAO.findById(customerID);
-//		
-//		if (!opt.isPresent()) {
-//			throw new CustomerNotFoundException(
-//	                "Could not find customer with customerId = " + customerID);
-//		}
-//		else {
-//			Customer customer = opt.get();
-//			
-//			List<Account> list = customer.getAccounts();
-//			
-//			Account account = new Account();
-//			account.setAccountId(list.size());
-//			account.setAccountType(AccountType.CURRENT.toString());
-//			
-//			account = deposit(customer.getCustomerID(),account.getAccountId(), initialCredit);
-//			//account.setBalance(initialCredit);
-//			
-//			list.add(account);
-//			
-//			customer.setAccounts(list);
-//			customerDAO.saveAndFlush(customer);
-//			logger.debug("New account added for customer = " + customer);
-//			return customer;
-//			
-//		}
-		
+				
 	}
 	
 	@Override

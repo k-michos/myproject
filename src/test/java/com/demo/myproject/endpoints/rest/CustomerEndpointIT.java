@@ -133,7 +133,7 @@ public class CustomerEndpointIT {
     	List<Account> list = customer.getAccounts();
     	Account account = new Account();
     	account.setAccountId(list.size());
-		account.setAccountType(AccountType.CURRENT.toString());
+		account.setAccountType(AccountType.CURRENT);
 		account.setBalance(1000);
 		
 		list.add(account);
@@ -186,7 +186,16 @@ public class CustomerEndpointIT {
     	customer.setCustomerID(1L);
     	customer.setName("Testing");
     	customer.setSurname("Testing");
-    	customer.getAccounts().add(new Account(0,10.0,AccountType.CURRENT.toString()));
+    	customer.setAccounts(new ArrayList<Account>());
+    	
+    	Account account = new Account();
+    	account.setAccountId(0);
+    	account.setBalance(10.0);
+    	account.setAccountType(AccountType.CURRENT);
+    	account.setCustomer(customer);
+    	account.setId(1L);
+    	
+    	customer.getAccounts().add(account);
     	return customer;
     }
    

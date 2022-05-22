@@ -107,8 +107,6 @@ public class CustomerEndpoint {
 		public Account deposit (@RequestParam(required = true) Long customerID, @RequestParam(required = true) int accountId, @RequestParam(required = true) double amount) {
 			logger.info("CustomerRestEndpoint::deposit method revoked.");
 			try {
-				//Customer customer = customers.getCustomerById(customerID);
-				//Account account = customers.getCustomerById(customerID).getAccounts().get(accountId);
 				return customers.deposit(customerID, accountId, amount);
 			}
 			catch (CustomerNotFoundException ex) {
@@ -121,7 +119,7 @@ public class CustomerEndpoint {
 		public Account withdraw (@RequestParam(required = true) Long customerID, @RequestParam(required = true) int accountId, @RequestParam(required = true) double amount) {
 			logger.info("CustomerRestEndpoint::withdraw method revoked.");
 			try {
-				//Customer customer = customers.getCustomerById(customerID);
+				
 				return customers.withdraw(customerID, accountId, amount);
 			}
 			catch (CustomerNotFoundException ex) {

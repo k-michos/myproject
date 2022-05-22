@@ -1,30 +1,51 @@
 package com.demo.myproject.entities;
 
-import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-public class Account implements Serializable{
+import com.demo.myproject.utils.Constants.AccountType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@Entity
+public class Account { 
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
+	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	
+	@Column(nullable = false)
 	private int accountId;
 	
+	@ManyToOne
+	@JsonIgnore
+	@JoinColumn(name = "customerID", nullable = false)
+	private Customer customer;
+	
+	@Column(nullable = false)
     private double balance;
 
-    private String accountType;
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+    private AccountType accountType;
     
 	public Account() {
 		
 	}
 
-	public Account(int accountId, double balance, String accountType) {
-		super();
-		this.accountId = accountId;
-		this.balance = balance;
-		this.accountType = accountType;
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public int getAccountId() {
@@ -35,6 +56,14 @@ public class Account implements Serializable{
 		this.accountId = accountId;
 	}
 
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
 	public double getBalance() {
 		return balance;
 	}
@@ -43,21 +72,21 @@ public class Account implements Serializable{
 		this.balance = balance;
 	}
 
-	
-	public String getAccountType() {
+	public AccountType getAccountType() {
 		return accountType;
 	}
 
-	public void setAccountType(String accountType) {
+	public void setAccountType(AccountType accountType) {
 		this.accountType = accountType;
 	}
-	
-
 
 	@Override
 	public String toString() {
-		return "Account [accountId=" + accountId + ", balance=" + balance + ", accountType=" + accountType + "]";
+		return "Account [id=" + id + ", accountId=" + accountId + ", balance=" + balance
+				+ ", accountType=" + accountType + "]";
 	}
 
-	
+
+
+
 }
