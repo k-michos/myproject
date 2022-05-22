@@ -59,16 +59,6 @@ public class TransactionsImpl implements Transactions {
 			List<Transaction> list = transactionDAO.findAllTransactionsByCustomerID(customerID);
 			return list;
 		}
-		
-//		try {
-//			customers.getCustomerById(customerID);
-//			List<Transaction> list = transactionDAO.findAllTransactionsByCustomerID(customerID);
-//			return list;
-//		}
-//		catch(CustomerNotFoundException ex) {
-//			System.out.println(ex);
-//			return null;
-//		}	
 	}
 
 	@Override
