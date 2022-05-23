@@ -1,0 +1,23 @@
+version: "3"
+services:
+  myproject:
+    image: kmichos/myproject
+    ports:
+      - "8080:8080"
+    networks:
+      - app-mysql
+    depends_on:
+      - mysqldb
+ 
+  mysqldb:
+    image: mysql:8
+    ports:
+      - "3307:3306"
+    networks:
+      - app-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=mydb  
+
+networks:
+  app-mysql: 
