@@ -25,30 +25,34 @@ Transactions" button).
 -------Technical Details and Instructions to run the application-------
 
 In order to deploy and run this Springboot application, you need Java 17 and Maven 3.8.5. Also, because 
-the back-end stores its data to a mysql database, you need to have a running mysql 8 instance.
+the back-end stores its data to a mysql database, you need to have a running mysql 8 instance. If you
+want to run it in a container using Docker, you need to have install docker, too.
 
 Access to GUI home page: http://localhost:8080/myapp/webapp/home
 
 Included a Postman suite that tests the rest API of the application: myapp.postman_collection.json
 This suite can be imported in Postman and execute the API calls described above.
 
-Commands: 	Execute them in the cloned project's path
+Commands: We have 3 cases depending on what we want to do. Execute one of the three set of commands in the cloned project's path
 
-				1. To run it locally: 	In application.properties file, set the proper spring.datasource.url, according to the comment (1st one to run it locally and comment-out the other one).
+				1. To run it locally: 	In application.properties file, make sure that the proper spring.datasource.url is set, according to the comment (1st one to run it locally and comment-out the other one).
 
 										- mvn clean install -DskipTests  (-DskipTests flag is to skip tests)
 
 										- mvn spring-boot:run  	(mysql should be up and running)
 									
 				
-				2. When using Docker: 	We need to create the network on which we will run this docker-compose.yml script.
-				    (with the 			- docker network create app-mysql
-				    published image)	
+				2. When using Docker: 	In application.properties file, make sure that the proper spring.datasource.url is set, according to the comment (2nd one to run it as Docker). If it is not, we need 
+					(with the			to proceed with set of commands No 3, because the application needs to be built.
+					published image)
+										We need to create the network on which we will run this docker-compose.yml script.
+				     					- docker network create app-mysql
+				    	
 										Finally, execute the docker-compose command, so to start both dockers.
 										- docker-compose up
 				
 					
-				3. When using Docker:	In application.properties file, set the proper spring.datasource.url, according to the comment (3rd one to run it as Docker). 	
+				3. When using Docker:	In application.properties file, make sure that the proper spring.datasource.url is set, according to the comment (2nd one to run it as Docker). 	
 					(and we build 
 					the app)			Build the application.					
 										- mvn clean install -DskipTests
@@ -56,7 +60,7 @@ Commands: 	Execute them in the cloned project's path
 										Build locally the Docker image using Dckerfile and the jar files made in previous step.
 										- docker build -t kmichos/myproject .
 									
-										Push this image to DockerHub.
+										Push this image to DockerHub. (optional, this step is for publishing publicly the image of our docker)
 										- docker push kmichos/myproject
 									
 										Then we need to create the network on which we will run this docker-compose.yml script. (To check if there is such network, do "docker network ls")
